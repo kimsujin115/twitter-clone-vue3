@@ -7,7 +7,9 @@
     <input type="text" v-model="email" class="rounded w-96 px-4 py-3 border border-gray-300 focus:ring-2 focus:border-primary focus:outline-none" placeholder="아이디">
     <input type="password" v-model="password" class="rounded w-96 px-4 py-3 border border-gray-300 focus:ring-2 focus:border-primary focus:outline-none" placeholder="비밀번호">
     <button class="w-96 rounded bg-primary text-white py-4 hover:bg-dark" @click="onRegister">회원가입</button>
-    <button class="text-primary">계정이 이미 있으신가요? 로그인 하기</button>
+    <router-link to="/login">
+      <button class="text-primary">계정이 이미 있으신가요? 로그인 하기</button>
+    </router-link>
   </div>
 </template>
 

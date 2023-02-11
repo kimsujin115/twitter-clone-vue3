@@ -1,5 +1,5 @@
 <template>
-    <!-- 로그인 -->
+    <!-- 로그인 전-->
   <router-view></router-view>
 </template>
 
