@@ -7,56 +7,12 @@
         <i class="fa-brands fa-twitter text-3xl text-primary lg:ml-4"></i>
         <!-- sidemenu icons -->
         <nav class="mt-3">
-          <ul class="flex flex-col items-start">
-            <li>
-              <div class="hover:text-primary hover:bg-blue-50 px-4 py-2 rounded-full cursor-pointer">
-                <i class="fas fa-house fa-fw text-2xl"></i>
-                <span class="ml-5 text-lg hidden lg:inline-block">홈</span>
-              </div>
-            </li>
-            <li>
-              <div class="hover:text-primary hover:bg-blue-50 px-4 py-2 rounded-full cursor-pointer">
-                <i class="far fa-hashtag fa-fw text-2xl"></i>
-                <span class="ml-5 text-lg hidden lg:inline-block">탐색하기</span>
-              </div>
-            </li>
-            <li>
-              <div class="hover:text-primary hover:bg-blue-50 px-4 py-2 rounded-full cursor-pointer">
-                <i class="far fa-bell fa-fw text-2xl"></i>
-                <span class="ml-5 text-lg hidden lg:inline-block">알림</span>
-              </div>
-            </li>
-            <li>
-              <div class="hover:text-primary hover:bg-blue-50 px-4 py-2 rounded-full cursor-pointer">
-                <i class="far fa-envelope fa-fw text-2xl"></i>
-                <span class="ml-5 text-lg hidden lg:inline-block">쪽지</span>
-              </div>
-            </li>
-            <li>
-              <div class="hover:text-primary hover:bg-blue-50 px-4 py-2 rounded-full cursor-pointer">
-                <i class="fa-regular fa-fw fa-bookmark text-2xl"></i>
-                <span class="ml-5 text-lg hidden lg:inline-block">북마크</span>
-              </div>
-            </li>
-            <li>
-              <div class="hover:text-primary hover:bg-blue-50 px-4 py-2 rounded-full cursor-pointer">
-                <i class="far fa-list-alt fa-fw text-2xl"></i>
-                <span class="ml-5 text-lg hidden lg:inline-block">리스트</span>
-              </div>
-            </li>
-            <li>
-              <div class="hover:text-primary hover:bg-blue-50 px-4 py-2 rounded-full cursor-pointer">
-                <i class="far fa-user fa-fw text-2xl"></i>
-                <span class="ml-5 text-lg hidden lg:inline-block">프로필</span>
-              </div>
-            </li>
-            <li>
-              <div class="hover:text-primary hover:bg-blue-50 px-4 py-2 rounded-full cursor-pointer">
-                <i class="fas fa-ellipsis-h fa-fw text-2xl"></i>
-                <span class="ml-5 text-lg hidden lg:inline-block">더보기</span>
-              </div>
-            </li>
-          </ul>
+          <div class="flex flex-col items-start">
+            <router-link :to="route.path" class="block hover:text-primary hover:bg-blue-50 px-4 py-2 rounded-full cursor-pointer" v-for="route in routes" :key="route">
+              <i :class="route.icon"></i>
+              <span class="ml-5 text-lg hidden lg:inline-block">{{route.title}}</span>
+            </router-link>
+          </div>
         </nav>
         <!--// sidemenu icons -->
 
@@ -89,20 +45,26 @@
 
     <!-- main section  -->
     <div class="flex-1 flex h-screen">
-      <Profile />
+      <router-view />
     </div>
   </div>
 </template>
 
 <script>
-  import Profile from './pages/Profile.vue' 
-  //import Messages from './pages/Messages.vue'
-  // import Home from './pages/Home.vue'
-  export default {
-    components : { Profile },
-    setup() {
+  import {ref, onBeforeMount} from 'vue'
+  import router from './router';
 
-    },
+  export default {
+    setup() {
+      const routes = ref([]) //초기값
+
+      onBeforeMount( () => {
+        routes.value = router.options.routes
+      })
+      return {
+        routes
+      }
+    }
   }
 </script>
 
