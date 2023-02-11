@@ -1,8 +1,8 @@
 <template>
   <div class="flex h-screen container mx-auto">
     <!-- side section -->
-    <div class="w-20 lg:w-1/4 py-5 px-5 flex flex-col justify-between border-r border-gray-100">
-      <div class="flex flex-col items-center lg:items-start">
+    <div class="w-20 xl:w-1/4 py-5 px-5 flex flex-col justify-between border-r border-gray-100">
+      <div class="flex flex-col items-center xl:items-start">
         <!-- twitter logo -->
         <i class="fa-brands fa-twitter text-3xl text-primary lg:ml-4"></i>
         <!-- sidemenu icons -->
@@ -89,16 +89,17 @@
 
     <!-- main section  -->
     <div class="flex-1 flex h-screen">
-        <Messages />
+      <Profile />
     </div>
   </div>
 </template>
 
 <script>
-  import Messages from './pages/Messages.vue'
+  import Profile from './pages/Profile.vue' 
+  //import Messages from './pages/Messages.vue'
   // import Home from './pages/Home.vue'
   export default {
-    components : { Messages },
+    components : { Profile },
     setup() {
 
     },
