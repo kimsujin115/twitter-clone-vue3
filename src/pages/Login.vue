@@ -14,9 +14,10 @@
   </template>
   
   <script>
-    import { ref } from 'vue'
-    import { auth } from '../firebase'
+    import { ref, onMounted } from 'vue'
+    import { auth, USER_COLLECTION } from '../firebase'
     import { useRouter } from 'vue-router'
+    import store from '../store'
 
     export default {
       setup() {
@@ -24,6 +25,10 @@
         const password = ref('')
         const loading = ref(false)
         const router = useRouter()
+
+        onMounted( () => { //
+          console.log(store.state.user)
+        })
   
         const onLogin = async () => {
           if(!email.value || !password.value) {
@@ -35,7 +40,14 @@
             loading.value = true
             const {user} = await auth.signInWithEmailAndPassword(email.value, password.value)
             console.log(user.uid)
-            router.replace('/') //앞에 history back 정보값 없애고 아예 첫 페이지로 시작하게끔
+
+            //로그인 성공했을 때 vuex 저장소에서 유저 정보 저장
+            //get user info
+            const doc = await USER_COLLECTION.doc(user.uid).get() //get은 도큐먼트를 가져와
+            //console.log(doc.data())
+            store.commit("SET_USER", doc.data()) //store > mutation에서 생성했던거 넣어줘야함 , doc.data은 유저의 정보
+            console.log(store.state.user)
+            //router.replace('/') //앞에 history back 정보값 없애고 아예 첫 페이지로 시작하게끔
           } catch(e) {
             switch (e.code) {
               case "auth/invalid-email":
