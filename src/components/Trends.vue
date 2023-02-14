@@ -25,7 +25,7 @@
                 </li>
             </ul>
             <div class="px-4 py-2 rounded-xl hover:bg-gray-100 cursor-pointer">
-            <span class="text-primary text-lg rounded-xl">더보기</span>
+                <span class="text-primary text-lg rounded-xl">더보기</span>
             </div>
         </div>
         <!-- follow recommends -->
