@@ -9,7 +9,15 @@ https://v2.tailwindcss.com/
 https://fontawesome.com/kits
 https://cdnjs.com/libraries/font-awesome
 
+## firebase
+https://console.firebase.google.com/?hl=ko
+
 ## Recommended IDE Setup
 
 - [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
  
+ 
+-  vuex
+Vue.js 애플리케이션에 대한 상태 관리 패턴 + 라이브러리
+Plugin : https://www.npmjs.com/package/vuex-persistedstate
+
