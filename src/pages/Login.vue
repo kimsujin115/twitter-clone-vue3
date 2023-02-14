@@ -26,6 +26,11 @@
         const router = useRouter()
   
         const onLogin = async () => {
+          if(!email.value || !password.value) {
+            alert('이메일, 비밀번호를 모두 입력해주세요');
+            return
+          }
+
           try {
             loading.value = true
             const {user} = await auth.signInWithEmailAndPassword(email.value, password.value)
@@ -43,7 +48,7 @@
                 alert('등록되지 않은 이메일입니다.');
                 break
               default : 
-                alert(e.message)
+                alert(e.message + '로그인 실패입니다')
                 break
             }
 
