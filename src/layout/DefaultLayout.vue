@@ -1,5 +1,5 @@
 <template>
-    <div class="flex h-screen container mx-auto">
+    <div class="flex h-screen container mx-auto relative">
       <!-- side section -->
       <div class="w-20 xl:w-1/4 py-5 px-5 flex flex-col justify-between border-r border-gray-100">
         <div class="flex flex-col items-center xl:items-start">
@@ -29,7 +29,7 @@
         </div>
   
         <!-- profile button -->
-        <div class="mb-3">
+        <div class="mb-3" @click="showProfileDropdown = true">
           <button class="mt-3 px-2 py-1 w-full h-12 rounded-full hover:bg-blue-50 hidden lg:flex items-center">
             <img src="http://picsum.photos/100" alt="" class="w-10 h-10 rounded-full" />
             <div class="lg:ml-2 hidden lg:block">
@@ -49,21 +49,44 @@
       <div class="flex-1 flex h-screen">
         <router-view />
       </div>
+
+      <!-- profile dropdown menu -->
+      <div class="absolute bottom-20 left-7 shadow rounded-lg w-60 bg-white" v-if="showProfileDropdown" @click="showProfileDropdown = false">
+        <button class="flex hover:bg-gray-50 border-b border-gray-100 p-3 w-full items-center">
+          <div class="ml-2">
+            <div class="font-bold text-sm">sujin@naver.com</div>
+            <div class="text-left text-gray-500">@sujin</div>
+          </div>
+          <i class="fas fa-check text-primary ml-auto"></i>
+        </button>
+        <button class="p-3 hover:bg-gray-50 w-full text-left text-sm" @click="onLogout">@sujin 계정에서 로그아웃</button>
+      </div>
+
     </div>
   </template>
   
   <script>
     import {ref, onBeforeMount} from 'vue'
     import router from '../router';
+    import { auth } from '../firebase';
+    import store from '../store';
   
     export default {
       setup() {
         const routes = ref([]) //초기값
+        const showProfileDropdown = ref(false)
+
+        const onLogout = async () => {
+          await auth.signOut()
+          store.commit("SET_USER", null) // 로그인된 유저정보 초기화 시켜줌
+          await router.replace('/login') //push로 하면 뒤로 왔을 경우 다시 화면 나올 수 있으니 로그인 페이지로 이동
+          
+        }
   
         onBeforeMount( () => {
           routes.value = router.options.routes
         })
-        return { routes }
+        return { routes, showProfileDropdown, onLogout}
       }
     }
   </script>
