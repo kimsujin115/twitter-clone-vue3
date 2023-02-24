@@ -26,9 +26,9 @@
         const loading = ref(false)
         const router = useRouter()
 
-        onMounted( () => { //
-          console.log(store.state.user)
-        })
+        // onMounted( () => { //
+        //   console.log(store.state.user)
+        // })
   
         const onLogin = async () => {
           if(!email.value || !password.value) {
@@ -46,8 +46,8 @@
             const doc = await USER_COLLECTION.doc(user.uid).get() //get은 도큐먼트를 가져와
             //console.log(doc.data())
             store.commit("SET_USER", doc.data()) //store > mutation에서 생성했던거 넣어줘야함 , doc.data은 유저의 정보
-            console.log(store.state.user)
-            //router.replace('/') //앞에 history back 정보값 없애고 아예 첫 페이지로 시작하게끔
+            //console.log(store.state.user)
+            router.replace('/') //앞에 history back 정보값 없애고 아예 첫 페이지로 시작하게끔
           } catch(e) {
             switch (e.code) {
               case "auth/invalid-email":
