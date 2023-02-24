@@ -25,6 +25,8 @@ const router = createRouter({
     routes,
 })
 
+
+//navigation guard
 router.beforeEach((to, from, next) => {
     console.log(to.matched)
     const currentUser = store.state.user //현재 유저정보
