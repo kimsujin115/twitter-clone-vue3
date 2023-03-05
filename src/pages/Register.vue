@@ -41,6 +41,7 @@
           const doc = USER_COLLECTION.doc(user.uid)
           await doc.set({ // 새로운 문서 만드는거야
             uid : user.uid,
+            username : username.value,
             email : email.value,
             profile_img_url : '/profile.jpeg',
             num_tweets : 0,

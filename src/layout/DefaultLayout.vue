@@ -33,8 +33,8 @@
           <button class="mt-3 px-2 py-1 w-full h-12 rounded-full hover:bg-blue-50 hidden lg:flex items-center">
             <img src="http://picsum.photos/100" alt="" class="w-10 h-10 rounded-full" />
             <div class="lg:ml-2 hidden lg:block">
-              <div clas="text-sm font-bold">sujin.com</div>
-              <div class="text-xs text-grey-500 text-left" >@sujin</div>
+              <div clas="text-sm font-bold">{{currentUser.email}}</div>
+              <div class="text-xs text-grey-500 text-left" >@{{currentUser.username}}</div>
             </div>
             <i class="ml-auto fas fa-ellipsis-h fa-fw text-2xl hidden lg:block"></i>
           </button>
@@ -54,19 +54,19 @@
       <div class="absolute bottom-20 left-7 shadow rounded-lg w-60 bg-white" v-if="showProfileDropdown" @click="showProfileDropdown = false">
         <button class="flex hover:bg-gray-50 border-b border-gray-100 p-3 w-full items-center">
           <div class="ml-2">
-            <div class="font-bold text-sm">sujin@naver.com</div>
-            <div class="text-left text-gray-500">@sujin</div>
+            <div class="font-bold text-sm">{{currentUser.email}}</div>
+            <div class="text-left text-gray-500">@{{currentUser.username}}</div>
           </div>
           <i class="fas fa-check text-primary ml-auto"></i>
         </button>
-        <button class="p-3 hover:bg-gray-50 w-full text-left text-sm" @click="onLogout">@sujin 계정에서 로그아웃</button>
+        <button class="p-3 hover:bg-gray-50 w-full text-left text-sm" @click="onLogout">@{{currentUser.username}} 계정에서 로그아웃</button>
       </div>
 
     </div>
   </template>
   
   <script>
-    import {ref, onBeforeMount} from 'vue'
+    import {ref, onBeforeMount, computed } from 'vue'
     import router from '../router';
     import { auth } from '../firebase';
     import store from '../store';
@@ -75,6 +75,8 @@
       setup() {
         const routes = ref([]) //초기값
         const showProfileDropdown = ref(false)
+
+        const currentUser = computed(() => store.state.user)
 
         const onLogout = async () => {
           await auth.signOut()
@@ -86,7 +88,7 @@
         onBeforeMount( () => {
           routes.value = router.options.routes
         })
-        return { routes, showProfileDropdown, onLogout}
+        return { routes, showProfileDropdown, onLogout, currentUser}
       }
     }
   </script>
