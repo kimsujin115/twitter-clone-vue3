@@ -31,15 +31,15 @@
         <!-- profile button -->
         <div class="mb-3" @click="showProfileDropdown = true">
           <button class="mt-3 px-2 py-1 w-full h-12 rounded-full hover:bg-blue-50 hidden lg:flex items-center">
-            <img src="http://picsum.photos/100" alt="" class="w-10 h-10 rounded-full" />
+            <img :src="currentUser.profile_img_url" alt="" class="w-10 h-10 rounded-full" />
             <div class="lg:ml-2 hidden lg:block">
               <div clas="text-sm font-bold">{{currentUser.email}}</div>
               <div class="text-xs text-grey-500 text-left" >@{{currentUser.username}}</div>
             </div>
             <i class="ml-auto fas fa-ellipsis-h fa-fw text-2xl hidden lg:block"></i>
           </button>
-          <div class="lg:hidden flex justify-center">
-            <img src="http://picsum.photos/100" alt="" class="w-10 h-10 rounded-full cursor-pointer hover:opacity-80" />
+          <div class="xl:hidden flex justify-center">
+            <img :src="currentUser.profile_img_url" alt="" class="w-10 h-10 rounded-full cursor-pointer hover:opacity-80" />
           </div>
         </div> 
         <!--// profile button -->
@@ -53,6 +53,7 @@
       <!-- profile dropdown menu -->
       <div class="absolute bottom-20 left-7 shadow rounded-lg w-60 bg-white" v-if="showProfileDropdown" @click="showProfileDropdown = false">
         <button class="flex hover:bg-gray-50 border-b border-gray-100 p-3 w-full items-center">
+          <img :src="currentUser.profile_img_url" alt="" class="w-10 h-10 rounded-full">
           <div class="ml-2">
             <div class="font-bold text-sm">{{currentUser.email}}</div>
             <div class="text-left text-gray-500">@{{currentUser.username}}</div>
