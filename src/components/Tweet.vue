@@ -7,7 +7,7 @@
                 <span class="font-bold">{{ tweet.uid }}</span>
                 <span class="text-gray-500 text-xs">@sujin.com</span>
                 <span>·</span>
-                <span class="text-gray-500 text-xs">{{tweet.create_at}}</span>
+                <span class="text-gray-500 text-xs">{{ moment(tweet.create_at).fromNow() }}</span>
             </div>
             <!-- tweet body -->
             <div>{{ tweet.tweet_body }}</div>
@@ -34,9 +34,13 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
     //Home.vue에서 넘겨받을 정보를 사용할 수 있게 props 이용    
-    props : ['currentUser', "tweet"]
+    props : ['currentUser', "tweet"],
+    setup() {
+        return { moment }
+    }
 }
 </script>
 
