@@ -18,7 +18,7 @@
                 </div>
             </div>
             <!-- tweets -->
-            <Tweet v-for="tweet in 5" :key="tweet" :currentUser="currentUser"/> <!-- Tweet이라는 컴포넌트에 사용하고 싶은 데이터 정보를 넘겨줘 -->
+            <Tweet v-for="tweet in tweets" :key="tweet.id" :tweet="tweet" :currentUser="currentUser"/> <!-- Tweet이라는 컴포넌트에 사용하고 싶은 데이터 정보를 넘겨줘 -->
         </div>
     </div>
     <!-- trend part -->
@@ -28,7 +28,7 @@
 <script>
     import Trends from '../components/Trends.vue'
     import Tweet from '../components/Tweet.vue'
-    import {ref, computed} from 'vue'
+    import {ref, computed, onBeforeMount} from 'vue'
     import store from '../store'
     import { TWEET_COLLECTION } from '../firebase'
 
@@ -37,6 +37,22 @@
         setup() {
             const tweetBody = ref('');
             const currentUser = computed( () => store.state.user)
+            const tweets = ref([])
+
+            onBeforeMount( () => {
+                //firebase firestore onsnapshot 공식문서에 방법 참고 해보기
+                TWEET_COLLECTION.onSnapshot(snapshot => {
+                    snapshot.docChanges().forEach(change => {
+                        if (change.type === 'added') {
+                            tweets.value.splice(change.newIndex, 0, change.doc.data())
+                        } else if(change.type === 'modified') {
+                            tweets.value.splice(change.oldIndex, 1, change.doc.data())
+                        } else if(change.type == 'removed') {
+                            tweets.value.splice(change.oldIndex, 1)
+                        }
+                    })
+                })
+            })
 
             const onAddTweet = async () => { 
                 try {
@@ -57,7 +73,7 @@
                
             }
 
-            return { tweetBody, currentUser, onAddTweet }
+            return { tweetBody, currentUser, onAddTweet, tweets }
         },
     }
 </script>
