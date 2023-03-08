@@ -8,8 +8,8 @@
           <!-- sidemenu icons -->
           <nav class="mt-3">
             <div class="flex flex-col items-start">
-              <router-link :to="route.path" :class="`block hover:text-primary hover:bg-blue-50 rounded-full cursor-pointer ${router.currentRoute.value.name == route.name ? 'text-primary' : ''}`" v-for="route in routes" :key="route">
-                <div v-if="route.meta.isMenu" class="px-4 py-2 ">
+              <router-link :to="route.path" :class="`block hover:text-primary hover:bg-blue-50 p-2 xl:px-4 py-2 rounded-full cursor-pointer ${router.currentRoute.value.name == route.name ? 'text-primary' : ''}`" v-for="route in routes" :key="route">
+                <div v-if="route.meta.isMenu">
                     <i :class="route.icon"></i>
                     <span class="ml-5 text-lg hidden lg:inline-block">{{route.title}}</span>
                 </div>
@@ -87,7 +87,7 @@
         }
   
         onBeforeMount( () => {
-          routes.value = router.options.routes
+          routes.value = router.options.routes.filter(router => router.meta.isMenu == true)
 
           //console.log(router.currentRoute.value); //현재 라우터 정보
         })
