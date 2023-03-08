@@ -19,3 +19,4 @@ const firebaseConfig = {
   export const storage = firebase.storage()
 
   export const USER_COLLECTION = db.collection("users")
+  export const TWEET_COLLECTION = db.collection("tweets")
