@@ -41,7 +41,7 @@
 
             onBeforeMount( () => {
                 //firebase firestore onsnapshot 공식문서에 방법 참고 해보기
-                TWEET_COLLECTION.onSnapshot(snapshot => {
+                TWEET_COLLECTION.orderBy("create_at", "desc").onSnapshot(snapshot => {
                     snapshot.docChanges().forEach(change => {
                         if (change.type === 'added') {
                             tweets.value.splice(change.newIndex, 0, change.doc.data())
