@@ -30,7 +30,7 @@
     import Tweet from '../components/Tweet.vue'
     import {ref, computed, onBeforeMount} from 'vue'
     import store from '../store'
-    import { TWEET_COLLECTION } from '../firebase'
+    import { TWEET_COLLECTION, USER_COLLECTION } from '../firebase'
 
     export default {
         components : { Trends, Tweet },
@@ -42,17 +42,31 @@
             onBeforeMount( () => {
                 //firebase firestore onsnapshot 공식문서에 방법 참고 해보기
                 TWEET_COLLECTION.orderBy("create_at", "desc").onSnapshot(snapshot => {
-                    snapshot.docChanges().forEach(change => {
+                    snapshot.docChanges().forEach(async (change) => {
+                        let tweet = await getUserInfo(change.doc.data()); //getUserInfo함수를 async로 가져왔으니까 해당 변수해서도 정보 가져올동안 기다려야함
+
                         if (change.type === 'added') {
-                            tweets.value.splice(change.newIndex, 0, change.doc.data())
+                            tweets.value.splice(change.newIndex, 0, tweet)
                         } else if(change.type === 'modified') {
-                            tweets.value.splice(change.oldIndex, 1, change.doc.data())
+                            tweets.value.splice(change.oldIndex, 1, tweet)
                         } else if(change.type == 'removed') {
                             tweets.value.splice(change.oldIndex, 1)
                         }
                     })
                 })
             })
+
+            //유저정보를 가져올 수 있는 함수(USER_COLLECTION에서 tweet컬렉션으로 정보 가져옴)
+            const getUserInfo = async (tweet) => {
+                const doc = await USER_COLLECTION.doc(tweet.uid).get()
+                tweet.profile_img_url = doc.data().profile_img_url
+                tweet.email = doc.data().email
+                tweet.username = doc.data().username
+
+                //tweet = {...tweet, ...doc.data()} //js ... synlax (유저컬랙션과 트윗컬랙션 전체 가져올 때 이런 구문 사용가능)
+                //console.log(tweet)
+                return tweet
+            }
 
             const onAddTweet = async () => { 
                 try {
