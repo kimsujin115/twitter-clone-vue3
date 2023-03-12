@@ -20,7 +20,7 @@
   
           <!-- tweet button -->
           <div class="lg:w-full">
-            <button class="mt-3 bg-primary text-white lg:w-full w-12 h-12 rounded-full hover:bg-dark">
+            <button @click="showTweetModal = true" class="mt-3 bg-primary text-white lg:w-full w-12 h-12 rounded-full hover:bg-dark">
               <span class="hidden lg:block">트윗</span>
               <i class="fas fa-plus lg:hidden"></i>
             </button>
@@ -63,6 +63,9 @@
         <button class="p-3 hover:bg-gray-50 w-full text-left text-sm" @click="onLogout">@{{currentUser.username}} 계정에서 로그아웃</button>
       </div>
 
+
+      <!-- tweet modal popup -->
+      <tweet-modal v-if="showTweetModal" @close-modal="showTweetModal = false"></tweet-modal>
     </div>
   </template>
   
@@ -71,11 +74,14 @@
     import router from '../router';
     import { auth } from '../firebase';
     import store from '../store';
+    import TweetModal from '../components/TweetModal.vue';
   
     export default {
+      components: { TweetModal },
       setup() {
         const routes = ref([]) //초기값
         const showProfileDropdown = ref(false)
+        const showTweetModal = ref(false)
 
         const currentUser = computed(() => store.state.user)
 
@@ -91,7 +97,7 @@
 
           //console.log(router.currentRoute.value); //현재 라우터 정보
         })
-        return { routes, showProfileDropdown, onLogout, currentUser, router}
+        return { routes, showProfileDropdown, onLogout, currentUser, router, showTweetModal}
       }
     }
   </script>
