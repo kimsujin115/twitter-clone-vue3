@@ -45,7 +45,7 @@
                                     <!-- tweet button -->
                                     <div class="text-right hidden sm:block">
                                         <button v-if="!tweetBody.length" class="bg-light text-sm font-bold text-white px-4 py-2 rounded-full">답글</button>
-                                        <button v-else class="bg-primary text-sm font-bold text-white px-4 py-2 rounded-full hover:bg-dark">답글</button>
+                                        <button v-else @click="onCommentTweet" class="bg-primary text-sm font-bold text-white px-4 py-2 rounded-full hover:bg-dark">답글</button>
                                     </div>
                                 </div>
                             </div>
@@ -62,6 +62,8 @@
     import moment from 'moment'
     import addTweet from '../utils/addTweet';
     import store from '../store';
+    import { COMMENT_COLLECTION, TWEET_COLLECTION } from '../firebase';
+    import firebase from 'firebase';
 
     export default {
         props : ['tweet'], //부모컴포넌트에서 가져와서 자식 컴포넌트에서도 사용 할 수 있음
@@ -69,7 +71,27 @@
             const tweetBody = ref('')
             const currentUser = computed(() => store.state.user)
 
-            return { tweetBody, moment, currentUser}
+            const onCommentTweet = async () => {
+               try {
+                const doc =  COMMENT_COLLECTION.doc()
+                await doc.set({
+                    id : doc.id,
+                    from_tweet_id : props.tweet.id,
+                    comment_tweet_body : tweetBody.value,
+                    uid : currentUser.value.uid,
+                    create_id : Date.now(),
+                })
+
+                await TWEET_COLLECTION.doc(props.tweet.id).update({
+                    num_comments: firebase.firestore.FieldValue.increment(1), //firebase 공식문서 참고
+                })
+                emit('close-modal')
+               } catch(e) {
+                console.log('on comment tweet error: ', e)
+               }
+            }
+
+            return { tweetBody, moment, currentUser, onCommentTweet}
         }
     }
 </script>
