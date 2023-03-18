@@ -21,20 +21,18 @@
                             <!-- original tweet -->
                             <div class="flex px-4 pt-4 pb-3">
                                 <div class="flex flex-col">
-                                    <img :src="currentUser.profile_img_url" alt="" class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer">
+                                    <img :src="tweet.profile_img_url" alt="" class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer">
                                     <div class="ml-5 w-0.5 h-full bg-gray-300 mt-2 -mb-1"></div>
                                 </div>
                                 <div class="ml-2 flex-1">
                                     <div class="flex space-x-2">
-                                        <span class="font-bold text-sm">user id</span>
-                                        <span class="text-gray text-sm">@username</span>
-                                        <span class="text-gray text-sm">1시간</span>
+                                        <span class="font-bold text-sm">{{ tweet.email }}</span>
+                                        <span class="text-gray text-sm">@{{ tweet.username }}</span>
+                                        <span class="text-gray text-sm">{{ moment(tweet.created_at).fromNow() }}</span>
                                     </div>
-                                    <div class="text-sm">
-                                        original tweet comment
-                                    </div>
+                                    <div class="text-sm">{{ tweet.tweet_body }}</div>
                                     <div>
-                                        <span class="text-primary text-sm">@otheruser</span>
+                                        <span class="text-primary text-sm">@@{{ tweet.username }}</span>
                                         <span class="text-gray text-sm">님에게 보내는 답글</span>
                                     </div>
                                 </div>
@@ -47,7 +45,7 @@
                                     <!-- tweet button -->
                                     <div class="text-right hidden sm:block">
                                         <button v-if="!tweetBody.length" class="bg-light text-sm font-bold text-white px-4 py-2 rounded-full">답글</button>
-                                        <button v-else @click="onAddTweet" class="bg-primary text-sm font-bold text-white px-4 py-2 rounded-full hover:bg-dark">답글</button>
+                                        <button v-else class="bg-primary text-sm font-bold text-white px-4 py-2 rounded-full hover:bg-dark">답글</button>
                                     </div>
                                 </div>
                             </div>
@@ -61,25 +59,17 @@
 
 <script>
     import { ref, computed } from 'vue';
+    import moment from 'moment'
     import addTweet from '../utils/addTweet';
     import store from '../store';
 
     export default {
+        props : ['tweet'], //부모컴포넌트에서 가져와서 자식 컴포넌트에서도 사용 할 수 있음
         setup(props, { emit }) {
             const tweetBody = ref('')
             const currentUser = computed(() => store.state.user)
-            const onAddTweet = async () => { 
-                try {
-                    addTweet(tweetBody.value, currentUser.value)
-                    tweetBody.value = '';
-                    emit('close-modal')
-                } catch(e) {
-                    console.log('on add tweet error on homepage')
-                }
-               
-            }
 
-            return { tweetBody, currentUser, onAddTweet}
+            return { tweetBody, moment, currentUser}
         }
     }
 </script>
