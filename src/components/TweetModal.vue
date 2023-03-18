@@ -38,11 +38,22 @@
 
 <script>
     import { ref } from 'vue';
+    import addTweet from '../utils/addTweet';
+
     export default {
         setup() {
             const tweetBody = ref('')
+            const onAddTweet = async () => { 
+                try {
+                    addTweet(tweetBody.value, currentUser.value)
+                    tweetBody.value = '';
+                } catch(e) {
+                    console.log('on add tweet error on homepage')
+                }
+               
+            }
 
-            return { tweetBody }
+            return { tweetBody, onAddTweet }
         }
     }
 </script>
