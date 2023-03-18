@@ -19,7 +19,7 @@
                         </div>
                         <!-- tweeting section -->
                         <div class="flex p-4">
-                            <img src="http://picsum.photos/100" alt="" class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer">
+                            <img :src="currentUser.profile_img_url" alt="" class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer">
                             <div class="ml-2 flex-1 flex flex-col">
                                 <textarea v-model="tweetBody" placeholder="무슨 일이 일어나고 있나요?" rows="5" class="w-full text-lg font-bold foucs:outline-none mb-3 resize-none"></textarea>
                                 <!-- tweet button -->
@@ -37,23 +37,26 @@
 </template>
 
 <script>
-    import { ref } from 'vue';
+    import { ref, computed } from 'vue';
     import addTweet from '../utils/addTweet';
+    import store from '../store';
 
     export default {
-        setup() {
+        setup(props, { emit }) {
             const tweetBody = ref('')
+            const currentUser = computed(() => store.state.user)
             const onAddTweet = async () => { 
                 try {
                     addTweet(tweetBody.value, currentUser.value)
                     tweetBody.value = '';
+                    emit('close-modal')
                 } catch(e) {
                     console.log('on add tweet error on homepage')
                 }
                
             }
 
-            return { tweetBody, onAddTweet }
+            return { tweetBody, currentUser, onAddTweet}
         }
     }
 </script>
