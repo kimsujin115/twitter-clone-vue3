@@ -46,7 +46,7 @@
                 TWEET_COLLECTION.orderBy("create_at", "desc").onSnapshot(snapshot => {
                     snapshot.docChanges().forEach(async (change) => {
                         let tweet = await getTweetInfo(change.doc.data(), currentUser.value); //getTweetInfo함수를 async로 가져왔으니까 해당 변수해서도 정보 가져올동안 기다려야함
-                        console.log('tweet info : ', tweet)
+                        //console.log('tweet info : ', tweet)
 
                         if (change.type === 'added') {
                             tweets.value.splice(change.newIndex, 0, tweet)
