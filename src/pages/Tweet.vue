@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 flex">
     <div class="flex-1 border-r border-gray-100">
-        <div class="flex flex-col">
+        <div class="flex flex-col" v-if="tweet">
             <!-- title -->
             <div class="flex items-center px-3 py-2 border-b border-gray-100">
                 <button @click="router.go(-1)">
@@ -13,20 +13,20 @@
             <div class="px-3 py-2 flex">
                 <img src="http://picsum.photos/100" alt="" class="2-10 h-10 rounded-full hover:opacity-90 cursor-pointer">
                 <div class="ml-2">
-                    <div class="font-bold">이메일</div>
-                    <div class="text-gray text-sm">@id</div>
+                    <div class="font-bold">{{tweet.email}}</div>
+                    <div class="text-gray text-sm">{{ tweet.username }}</div>
                 </div>
             </div>
             <!-- 본문 -->
             <div class="border-b border-gray-100">
-                <div class="px-3 py-2">본문 내용 영역 입니다.</div>
-                <div class="px-3 py-2 text-gray text-xs">오후 07:00 . 2023년 4월 2일</div>
+                <div class="px-3 py-2">{{ tweet.tweet_body }}</div>
+                <div class="px-3 py-2 text-gray text-xs">{{ moment(tweet.create_at).fromNow() }}</div>
             </div>
             <div class="flex space-x-2 items-center px-3 py-2 border-b border-gray-100">
-                <span>1</span>
+                <span>{{ tweet.num_retweets}}</span>
                 <span class="text-sm text-gray">리트윗</span>
-                <span class="ml-5">1</span>
-                <span class="text-sm text-gray">좋아요</span>
+                <span class="ml-5">{{ tweet.num_likes }}</span>
+                <span class="text-sm text-gray">마음에 들어요</span>
             </div>
             <div class="flex justify-around py-2 border-b border-gray-100">
                 <button class="far fa-comment text-gray-400 text-xl hover:bg-blue-50 hover:text-primary p-2 rounded-full w-10 h-10"></button>
@@ -57,10 +57,30 @@
 <script>
 import Trends from '../components/Trends.vue'
 import router from '../router';
+import { onBeforeMount, ref, computed } from 'vue';
+import store from '../store';
+import { TWEET_COLLECTION } from '../firebase';
+import { useRoute } from 'vue-router'
+import getTweetInfo from '../utils/getTweetInfo';
+import moment from 'moment';
+
 export default {
   components: { Trends },
   setup() {
-    return { router }
+    const tweet = ref(null)
+    const comments = ref([])
+    const currentUser = computed(() => store.state.user)
+
+    const route = useRoute()
+
+    onBeforeMount(async () => {
+        await TWEET_COLLECTION.doc(route.params.id).onSnapshot(async (doc) => {
+            const t = await getTweetInfo(doc.data(),  currentUser.value)
+            tweet.value = t
+
+        })
+    })
+    return { router, tweet, comments, currentUser, moment }
   },
 }
 </script>
