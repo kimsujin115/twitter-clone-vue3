@@ -11,7 +11,7 @@
             </div>
             <!-- tweet -->
             <div class="px-3 py-2 flex">
-                <img src="http://picsum.photos/100" alt="" class="2-10 h-10 rounded-full hover:opacity-90 cursor-pointer">
+                <img :src="tweet.profile_img_url" alt="" class="2-10 h-10 rounded-full hover:opacity-90 cursor-pointer">
                 <div class="ml-2">
                     <div class="font-bold">{{tweet.email}}</div>
                     <div class="text-gray text-sm">{{ tweet.username }}</div>
