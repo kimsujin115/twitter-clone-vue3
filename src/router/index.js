@@ -4,6 +4,7 @@ import Notifications from '../pages/Notifications.vue'
 import Messages from '../pages/messages.vue'
 import Profile from '../pages/Profile.vue'
 import Register from '../pages/Register.vue'
+import Tweet from '../pages/Tweet.vue'
 import Login from '../pages/Login.vue'
 import store from "../store";
 
@@ -16,6 +17,7 @@ const routes = [
     { path : '/', name:'list', component : Home, title: '리스트', icon: 'far fa-list-alt fa-fw text-2xl', meta: { isMenu : true, layout : 'DefaultLayout', requireAuth:true}},
     { path : '/Profile', name:'profile', component : Profile , title: '프로필', icon: 'far fa-user fa-fw text-2xl', meta: { isMenu : true, layout : 'DefaultLayout', requireAuth:true}},
     { path : '/', name:'more', component : Profile , title: '더보기', icon: 'fas fa-ellipsis-h fa-fw text-2xl', meta: { isMenu : true, layout : 'DefaultLayout', requireAuth:true}},
+    { path : '/tweet/:id', name:'tweet', component : Tweet , meta: { isMenu : false, layout : 'DefaultLayout', requireAuth:true}}, //트윗페이지
     { path : '/register', name:'register', component : Register , meta: { isMenu : false, layout : 'EmptyLayout'}},
     { path : '/login', name:'login', component : Login , meta: { isMenu : false, layout : 'EmptyLayout'}},
 ]
