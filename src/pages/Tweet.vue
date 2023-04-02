@@ -29,7 +29,7 @@
                 <span class="text-sm text-gray">마음에 들어요</span>
             </div>
             <div class="flex justify-around py-2 border-b border-gray-100">
-                <button class="far fa-comment text-gray-400 text-xl hover:bg-blue-50 hover:text-primary p-2 rounded-full w-10 h-10"></button>
+                <button @click="showCommentModal = true" class="far fa-comment text-gray-400 text-xl hover:bg-blue-50 hover:text-primary p-2 rounded-full w-10 h-10"></button>
                 <button class="fas fa-retweet text-gray-400 text-xl hover:bg-green-50 hover:text-green-400 p-2 rounded-full w-10 h-10"></button>
                 <button class="far fa-heart text-gray-400 text-xl hover:bg-red-50 hover:text-red-400 p-2 rounded-full w-10 h-10"></button>
             </div>
@@ -51,6 +51,7 @@
         </div>
     </div>
     <trends></trends>
+    <comment-modal :tweet="tweet" v-if="showCommentModal" @close-modal="showCommentModal = false"></comment-modal>
   </div>
 </template>
 
@@ -63,13 +64,15 @@ import { TWEET_COLLECTION } from '../firebase';
 import { useRoute } from 'vue-router'
 import getTweetInfo from '../utils/getTweetInfo';
 import moment from 'moment';
+import CommentModal from '../components/CommentModal.vue';
 
 export default {
-  components: { Trends },
+  components: { Trends, CommentModal },
   setup() {
     const tweet = ref(null)
     const comments = ref([])
     const currentUser = computed(() => store.state.user)
+    const showCommentModal = ref(false)
 
     const route = useRoute()
 
@@ -80,7 +83,7 @@ export default {
 
         })
     })
-    return { router, tweet, comments, currentUser, moment }
+    return { router, tweet, comments, currentUser, moment, showCommentModal }
   },
 }
 </script>
