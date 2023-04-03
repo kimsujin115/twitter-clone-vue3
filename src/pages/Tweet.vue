@@ -50,8 +50,8 @@
                     </div>
                     <div>{{ comment.comment_tweet_body }}</div>
                 </div>
-                <button>
-                    <i class="fas fa-trash text-red-400 hover:bg-red-50 w-10 h-10 rounded-full p-2"></i>
+                <button @click="handleDeleteComment(comment)" v-if="comment.uid === currentUser.uid">
+                    <i class="fas fa-trash text-red-400 hover:bg-red-50 w-10 h-10 rounded-full p-2 "></i>
                 </button>
             </div>
         </div>
@@ -73,6 +73,7 @@ import moment from 'moment'
 import CommentModal from '../components/CommentModal.vue'
 import handleRetweet from '../utils/handleRetweet'
 import handleLikes from '../utils/handleLikes'
+import firebase from 'firebase'
 
 export default {
   components: { Trends, CommentModal },
@@ -83,6 +84,18 @@ export default {
     const showCommentModal = ref(false)
 
     const route = useRoute()
+
+    const handleDeleteComment = async (comment) => {
+        if (confirm("댓글을 삭제하시겠습니까?")) {
+            //delete comment
+            await COMMENT_COLLECTION.doc(comment.id).delete();
+
+            // decrease tweet num comments
+            await TWEET_COLLECTION.doc(comment.from_tweet_id).update({
+                "num_comments" : firebase.firestore.FieldValue.increment(-1),
+            })
+        }
+    } 
 
     onBeforeMount(async () => {
       await TWEET_COLLECTION.doc(route.params.id).onSnapshot(async (doc) => {
@@ -103,7 +116,7 @@ export default {
         })
       })
     })
-    return { router, tweet, comments, currentUser, moment, showCommentModal, handleRetweet, handleLikes }
+    return { router, tweet, comments, currentUser, moment, showCommentModal, handleRetweet, handleLikes, handleDeleteComment }
   },
 }
 </script>
