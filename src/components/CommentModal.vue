@@ -79,7 +79,7 @@
                     from_tweet_id : props.tweet.id,
                     comment_tweet_body : tweetBody.value,
                     uid : currentUser.value.uid,
-                    create_id : Date.now(),
+                    created_at : Date.now(),
                 })
 
                 await TWEET_COLLECTION.doc(props.tweet.id).update({
