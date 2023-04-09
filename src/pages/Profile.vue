@@ -9,7 +9,7 @@
                 </button>
                 <div>
                     <div class="font-extrabold text-lg">{{ currentUser.email }}</div>
-                    <div class="text-xs text-gray-500">{{ currentUser.num_tweets }} 트윗</div>
+                    <div class="text-xs text-gray-500-500">{{ currentUser.num_tweets }} 트윗</div>
                 </div>
             </div>
             <!-- profile area -->
@@ -26,32 +26,23 @@
             <!-- user info -->
             <div class="mx-3 mt-2">
                <div class="font-extrabold text-lg">{{ currentUser.emaild }}</div>
-               <div class="text-gray">@{{ currentUser.username }}</div>
+               <div class="text-gray-500">@{{ currentUser.username }}</div>
                <div>
-                <span class="text-gray">가입일 : </span>
-                <span>{{ moment(currentUser.created_at).format('YYYY년 MM월') }}</span>
+                <span class="text-gray-500">가입일 : </span>
+                <span class="text-gray-500">{{ moment(currentUser.created_at).format('YYYY년 MM월') }}</span>
                </div> 
                <div>
-                <span class="font-bold mr-1">{{ currentUser.followings.length }}</span>
-                <span class="text-gray">팔로우 중</span>
-                <span class="font-bold mr-1 ml-2">{{ currentUser.follwers.length}}</span>
-                <span class="text-gray">팔로워</span>
+                <span class="font-bold mr-1">{{ currentUser.followings }}</span>
+                <span class="text-gray-500">팔로우 중</span>
+                <span class="font-bold mr-1 ml-2">{{ currentUser.follwer }}</span>
+                <span class="text-gray-500">팔로워</span>
                </div>
             </div>
             <!-- tabs -->
             <ul class="flex border-b border-color mt-3">
-                <li class="py-3 border-b border-primary w-1/4 hover:bg-blue-50">
-                    <a href="#" class="block font-bold text-primary text-center hover:text-primary" >트윗</a>
-                </li>
-                <li class="py-3 border-b w-1/4 hover:bg-blue-50">
-                    <a href="#" class="block text-gray font-bold text-center hover:text-primary" >트윗</a>
-                </li>
-                <li class="py-3 border-b w-1/4 hover:bg-blue-50">
-                    <a href="#" class="block text-gray font-bold text-center hover:text-primary" >트윗</a>
-                </li>
-                <li class="py-3 border-b w-1/4 hover:bg-blue-50">
-                    <a href="#" class="block text-gray font-bold text-center hover:text-primary" >트윗</a>
-                </li>
+                <li @click="currentTab = 'tweet'" :class="`${currentTab == 'tweet' ? 'border-b border-primary text-primary' : 'text-gray-500'} py-3 w-1/3 font-bold hover:bg-blue-50 text-center cursor-pointer`">트윗</li>
+                <li @click="currentTab = 'retweet'" :class="`${currentTab == 'retweet' ? 'border-b border-primary text-primary' : 'text-gray-500'} py-3 w-1/3 font-bold hover:bg-blue-50 text-center cursor-pointer`">리트윗</li>
+                <li @click="currentTab = 'like'" :class="`${currentTab == 'like' ? 'border-b border-primary text-primary' : 'text-gray-500'} py-3 w-1/3 font-bold hover:bg-blue-50 text-center cursor-pointer`">좋아요</li>
             </ul>
             <!-- tweet -->
             <div class="overflow-y-auto">
@@ -77,6 +68,7 @@
         setup() {
             const currentUser = computed(() => store.state.user )
             const tweets = ref([])
+            const currentTab = ref('tweet')
 
             onBeforeMount(() => {
 
@@ -100,7 +92,7 @@
                 })
             })
 
-            return { currentUser, tweets, moment }
+            return { currentUser, tweets, moment, currentTab }
         }
     }
 </script>
