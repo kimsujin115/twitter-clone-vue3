@@ -1,4 +1,5 @@
-import { TWEET_COLLECTION } from '../firebase'
+import { TWEET_COLLECTION, USER_COLLECTION } from '../firebase'
+import firebase from 'firebase'
 
 export default (tweetBody, currentUser) => { 
 
@@ -15,6 +16,11 @@ export default (tweetBody, currentUser) => {
                 num_likes : 0,
             })
             // tweetBody.value = '';
+
+            USER_COLLECTION.doc(currentUser.uid).update({
+                num_tweets : firebase.firestore.FieldValue.increment(1),
+            })
+            
             resolve(true)
         } catch(e) {
             // console.log('on add tweet error on homepage')
