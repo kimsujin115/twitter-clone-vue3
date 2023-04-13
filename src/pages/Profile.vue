@@ -46,8 +46,7 @@
             </ul>
             <!-- tweet -->
             <div class="overflow-y-auto">
-                <Tweet v-for="tweet in 10" :key="tweet.id" :currentUser="currentUser" :tweet="tweet"  />
-            </div>
+                <Tweet v-for="tweet in currentTab == 'tweet' ? tweets : currentTab == 'retweet' ? reTweets : likeTweets" :key="tweet.id" :currentUser="currentUser" :tweet="tweet" />            </div>
         </div>
         <!-- trend section -->
         <Trends /> 
@@ -59,7 +58,7 @@
     import Tweet from '../components/Tweet.vue'
     import store from '../store';
     import { computed, ref, onBeforeMount } from 'vue';
-    import { TWEET_COLLECTION, USER_COLLECTION } from '../firebase';
+    import { LIKES_COLLECTION, RETWEET_COLLECTION, TWEET_COLLECTION, USER_COLLECTION } from '../firebase';
     import getTweetInfo from '../utils/getTweetInfo';
     import moment from 'moment';
 
@@ -68,6 +67,8 @@
         setup() {
             const currentUser = computed(() => store.state.user )
             const tweets = ref([])
+            const reTweets = ref([])
+            const likeTweets = ref([])
             const currentTab = ref('tweet')
 
             onBeforeMount(() => {
@@ -90,9 +91,40 @@
                         }
                     })
                 })
+
+                RETWEET_COLLECTION.where('uid', '==', currentUser.value.uid).orderBy('created_at', 'desc').onSnapshot((snapshot) => {
+                    snapshot.docChanges().forEach(async (change) => {
+                        const doc = await TWEET_COLLECTION.doc(change.doc.data().from_tweet_id).get()
+                        let tweet = await getTweetInfo(doc.data(), currentUser.value)
+
+                        if (change.type === 'added') {
+                            reTweets.value.splice(change.newIndex, 0, tweet)
+                        } else if (change.type === 'modified') {
+                            reTweets.value.splice(change.oldIndex, 1, tweet)
+                        } else if (change.type === 'removed') {
+                            reTweets.value.splice(change.oldIndex, 1)
+                        }
+                    })
+                })
+
+                LIKES_COLLECTION.where('uid', '==', currentUser.value.uid).orderBy('created_at', 'desc').onSnapshot((snapshot) => {
+                    snapshot.docChanges().forEach(async (change) => {
+                        const doc = await TWEET_COLLECTION.doc(change.doc.data().from_tweet_id).get()
+                        let tweet = await getTweetInfo(doc.data(), currentUser.value)
+
+                        if (change.type === 'added') {
+                            likeTweets.value.splice(change.newIndex, 0, tweet)
+                        } else if (change.type === 'modified') {
+                            likeTweets.value.splice(change.oldIndex, 1, tweet)
+                        } else if (change.type === 'removed') {
+                            likeTweets.value.splice(change.oldIndex, 1)
+                        }
+                    })
+                })
+
             })
 
-            return { currentUser, tweets, moment, currentTab }
+            return { currentUser, tweets, reTweets, likeTweets, moment, currentTab }
         }
     }
 </script>
