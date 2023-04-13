@@ -28,11 +28,11 @@
                                     <div class="flex space-x-2">
                                         <span class="font-bold text-sm">{{ tweet.email }}</span>
                                         <span class="text-gray text-sm">@{{ tweet.username }}</span>
-                                        <span class="text-gray text-sm">{{ moment(tweet.created_at).fromNow() }}</span>
+                                        <span class="text-gray text-sm">{{ moment(tweet.create_at).fromNow() }}</span>
                                     </div>
                                     <div class="text-sm">{{ tweet.tweet_body }}</div>
                                     <div>
-                                        <span class="text-primary text-sm">@@{{ tweet.username }}</span>
+                                        <span class="text-primary text-sm">@{{ tweet.username }}</span>
                                         <span class="text-gray text-sm">님에게 보내는 답글</span>
                                     </div>
                                 </div>

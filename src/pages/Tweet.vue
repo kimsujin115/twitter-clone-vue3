@@ -46,7 +46,7 @@
                     <div class="flex items-center space-x-2">
                         <span class="font-bold">{{ comment.email }}</span>
                         <span class="text-gray text-sm">@{{ comment.username }}</span>
-                        <span>{{ moment(comment.create_at).fromNow() }}</span>
+                        <span>{{ moment(comment.created_at).fromNow() }}</span>
                     </div>
                     <div>{{ comment.comment_tweet_body }}</div>
                 </div>
