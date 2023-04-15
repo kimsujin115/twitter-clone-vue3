@@ -25,7 +25,7 @@
             </div>
             <!-- user info -->
             <div class="mx-3 mt-2">
-               <div class="font-extrabold text-lg">{{ currentUser.emaild }}</div>
+               <div class="font-extrabold text-lg">{{ currentUser.email }}</div>
                <div class="text-gray-500">@{{ currentUser.username }}</div>
                <div>
                 <span class="text-gray-500">가입일 : </span>
