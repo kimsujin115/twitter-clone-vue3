@@ -1,7 +1,9 @@
 <template>
     <!-- tweet -->
     <div class="flex px-3 py-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
-        <img :src="currentUser.profile_img_url" alt="" class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer">
+        <router-link :to="`/profile/${tweet.uid}`">
+            <img :src="currentUser.profile_img_url" alt="" class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer">
+        </router-link>
         <div class="ml-3 flex-1 flex flex-col space-y-1">
             <div class="text-sm space-x-1">
                 <span class="font-bold">{{ tweet.email }}</span>
@@ -16,7 +18,7 @@
                 <!-- comment button -->
                 <div @click="showCommentModal = true"  class="text-gray-500 hover:text-primary">
                     <i class="far fa-comment hover:bg-blue-50 rounded-full p-2"></i>
-                    <span class="ml-1 text-sm">{{tweet.num_comments}}</span>
+                    <span class="ml-1 text-sm">{{ tweet.num_comments }}</span>
                 </div>
                 <!-- retweet button -->
                 <div v-if="!tweet.isRetweeted" @click="handleRetweet(tweet)" class="text-gray-500 hover:text-green-400">

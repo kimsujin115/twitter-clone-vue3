@@ -1,22 +1,22 @@
 <template>
-    <div class="flex-1 flex">
+    <div class="flex-1 flex" v-if="profileUser">
         <!-- profile section -->
         <div class="flex-1 flex flex-col border-r border-color">
             <!-- title -->
             <div class="px-3 py-1 flex border-b border-color">
-                <button class="mr-4">
+                <button class="mr-4" @click="router.go(-1)">
                     <i class="fas fa-arrow-left text-primary p-3 rounded-full hover:bg-blue-50"></i>
                 </button>
                 <div>
-                    <div class="font-extrabold text-lg">{{ currentUser.email }}</div>
-                    <div class="text-xs text-gray-500-500">{{ currentUser.num_tweets }} 트윗</div>
+                    <div class="font-extrabold text-lg">{{ profileUser.email }}</div>
+                    <div class="text-xs text-gray-500-500">{{ profileUser.num_tweets }} 트윗</div>
                 </div>
             </div>
             <!-- profile area -->
             <div class="bg-gray-300 h-40 relative flex-none">
                 <!-- profile image -->
                 <div class="absolute -bottom-14 left-2 w-28 h-28 border-4 border-white bg-gray-100 rounded-full">
-                    <img :src="currentUser.profile_img_url" class="rounded-full opacity-90 hover:opacity-100 cursor-pointer" alt="">
+                    <img :src="profileUser.profile_img_url" class="rounded-full opacity-90 hover:opacity-100 cursor-pointer" alt="">
                 </div>
             </div>
             <!-- profile edit button -->
@@ -25,16 +25,16 @@
             </div>
             <!-- user info -->
             <div class="mx-3 mt-2">
-               <div class="font-extrabold text-lg">{{ currentUser.email }}</div>
-               <div class="text-gray-500">@{{ currentUser.username }}</div>
+               <div class="font-extrabold text-lg">{{ profileUser.email }}</div>
+               <div class="text-gray-500">@{{ profileUser.username }}</div>
                <div>
                 <span class="text-gray-500">가입일 : </span>
-                <span class="text-gray-500">{{ moment(currentUser.created_at).format('YYYY년 MM월') }}</span>
+                <span class="text-gray-500">{{ moment(profileUser.created_at).format('YYYY년 MM월') }}</span>
                </div> 
                <div>
-                <span class="font-bold mr-1">{{ currentUser.followings }}</span>
+                <span class="font-bold mr-1">{{ profileUser.followings }}</span>
                 <span class="text-gray-500">팔로우 중</span>
-                <span class="font-bold mr-1 ml-2">{{ currentUser.follwer }}</span>
+                <span class="font-bold mr-1 ml-2">{{ profileUser.follwer }}</span>
                 <span class="text-gray-500">팔로워</span>
                </div>
             </div>
@@ -61,23 +61,31 @@
     import { LIKES_COLLECTION, RETWEET_COLLECTION, TWEET_COLLECTION, USER_COLLECTION } from '../firebase';
     import getTweetInfo from '../utils/getTweetInfo';
     import moment from 'moment';
+    import { useRoute } from 'vue-router';
+    import router from '../router'
 
     export default {
         components : { Trends, Tweet },
         setup() {
             const currentUser = computed(() => store.state.user )
+            const profileUser = ref(null)
             const tweets = ref([])
             const reTweets = ref([])
             const likeTweets = ref([])
             const currentTab = ref('tweet')
+            const route = useRoute()
 
             onBeforeMount(() => {
 
-                USER_COLLECTION.doc(currentUser.value.uid).onSnapshot(doc => {
-                    store.commit("SET_USER", doc.data())
+                const profileUID = route.params.uid ?? currentUser.value.uid
+                console.log(profileUID)
+
+                USER_COLLECTION.doc(profileUID).onSnapshot(doc => {
+                    // store.commit("SET_USER", doc.data())
+                    profileUser.value = doc.data()
                 })
 
-                TWEET_COLLECTION.where("uid", "==", currentUser.value.uid).orderBy("create_at", "desc").onSnapshot(snapshot => {
+                TWEET_COLLECTION.where("uid", "==", profileUID).orderBy("create_at", "desc").onSnapshot(snapshot => {
                     snapshot.docChanges().forEach(async (change) => {
                         let tweet = await getTweetInfo(change.doc.data(), currentUser.value); //getTweetInfo함수를 async로 가져왔으니까 해당 변수해서도 정보 가져올동안 기다려야함
                         //console.log('tweet info : ', tweet)
@@ -92,7 +100,7 @@
                     })
                 })
 
-                RETWEET_COLLECTION.where('uid', '==', currentUser.value.uid).orderBy('created_at', 'desc').onSnapshot((snapshot) => {
+                RETWEET_COLLECTION.where('uid', '==', profileUID).orderBy('created_at', 'desc').onSnapshot((snapshot) => {
                     snapshot.docChanges().forEach(async (change) => {
                         const doc = await TWEET_COLLECTION.doc(change.doc.data().from_tweet_id).get()
                         let tweet = await getTweetInfo(doc.data(), currentUser.value)
@@ -107,7 +115,7 @@
                     })
                 })
 
-                LIKES_COLLECTION.where('uid', '==', currentUser.value.uid).orderBy('created_at', 'desc').onSnapshot((snapshot) => {
+                LIKES_COLLECTION.where('uid', '==', profileUID).orderBy('created_at', 'desc').onSnapshot((snapshot) => {
                     snapshot.docChanges().forEach(async (change) => {
                         const doc = await TWEET_COLLECTION.doc(change.doc.data().from_tweet_id).get()
                         let tweet = await getTweetInfo(doc.data(), currentUser.value)
@@ -124,7 +132,7 @@
 
             })
 
-            return { currentUser, tweets, reTweets, likeTweets, moment, currentTab }
+            return { currentUser, profileUser, tweets, reTweets, likeTweets, moment, currentTab, router }
         }
     }
 </script>
