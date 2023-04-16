@@ -22,8 +22,8 @@
                 </div>
             </div>
             <!-- profile edit button -->
-            <div class="text-right mt-2 mr-2">
-                <button @click="showProfileEditModal = true" class="border text-sm border-primary text-primary px-3 py-2 hover:bg-blue-50 font-bold rounded-full">프로필 수정</button>
+            <div class="text-right mt-2 mr-2 h-14">
+                <button v-if="currentUser.uid == profileUser.uid" @click="showProfileEditModal = true" class="border text-sm border-primary text-primary px-3 py-2 hover:bg-blue-50 font-bold rounded-full">프로필 수정</button>
             </div>
             <!-- user info -->
             <div class="mx-3 mt-2">
