@@ -44,6 +44,7 @@
             username : username.value,
             email : email.value,
             profile_img_url : '/profile.jpeg',
+            background_img_url : '/background.png',
             num_tweets : 0,
             followers: [],
             followings : [],

@@ -11,24 +11,24 @@
                         <!-- close btn -->
                         <div class="flex justify-between items-center border-b border-gray-100 p-2">
                             <div class="flex items-center">
-                                <button @click="$emit('close-modal')" class="fas fa-times flex justify-center text-primary text-lg p-2 w-10 hover:bg-blue-50 rounded-full"></button>
+                                <button @click="$emit('close-modal')" class="fas fa-times flex justify-center text-primary text-lg p-2 w-10 mr-2 hover:bg-blue-50 rounded-full"></button>
                                 <span class="font-bold text-lg">프로필 수정</span>
                             </div>
                             <div class="text-right mr-2">
-                                <button class="hover:bg-dark bg-primary text-white font-bold px-3 py-1 rounded-full">저장</button>
+                                <button @click="onSaveProfile" class="hover:bg-dark bg-primary text-white font-bold px-3 py-1 rounded-full">저장</button>
                             </div>
                         </div>
                         <!-- image section -->
                         <div class="h-60">
                             <!-- background image -->
                             <div class="bg-gray-300 h-40 relative flex-none flex items-center justify-center">
-                                <img ref="backgroundImage" src="/background.png" class="object-cover absolute h-full w-full" alt="">
+                                <img ref="backgroundImage" :src="currentUser.background_img_url" class="object-cover absolute h-full w-full" alt="">
                                 <button @click="onChangeBackgroundImage" class="absolute h-10 w-10 hover:text-gray-200 rounded-full fas fa-camera text-white text-lg"></button>
                                 <input @change="previewBackgroundImage" type="file" accept="image/*" id="backgroundImageInput" class="hidden">
 
                                 <!-- profile image-->
                                 <div class="absolute -bottom-14 left-2">
-                                    <img ref="profileImage" src="/profile.jpeg" class="object-cover border-4 border-white w-28 h-28 rounded-full" alt="">
+                                    <img ref="profileImage" :src="currentUser.profile_img_url" class="object-cover border-4 border-white w-28 h-28 rounded-full" alt="">
                                     <button @click="onChangeProfileImage" class="absolute bottom-9 left-9 h-10 w-10 hover:text-gray-200 rounded-full fas fa-camera text-white text-lg"></button>
                                     <input @change="previewProfileImage" type="file" accept="image/*" id="profileImageInput" class="hidden">
                                 </div>
@@ -62,13 +62,16 @@
     import { ref, computed } from 'vue';
     import addTweet from '../utils/addTweet';
     import store from '../store';
+    import { storage, USER_COLLECTION } from '../firebase';
 
     export default {
         setup(props, { emit }) {
             const tweetBody = ref('')
             const currentUser = computed(() => store.state.user)
-            const backgroundImage = ref(null)
             const profileImage = ref(null)
+            const profileImageData = ref(null)
+            const backgroundImage = ref(null)
+            const backgroundImageData = ref(null)
 
             const onAddTweet = async () => { 
                 try {
@@ -78,7 +81,6 @@
                 } catch(e) {
                     console.log('on add tweet error on homepage')
                 }
-               
             }
 
             const onChangeBackgroundImage = () => {
@@ -91,24 +93,72 @@
 
             const previewBackgroundImage = (event) => {
                 const file = event.target.files[0]
+                backgroundImageData.value = file
                 let reader = new FileReader()
-                reader.onload = function(event) {
+                reader.onload = function (event) {
                     backgroundImage.value.src = event.target.result
                 }
                 reader.readAsDataURL(file)
             }
-
+                
             const previewProfileImage = (event) => {
                 const file = event.target.files[0]
+                profileImageData.value = file
                 let reader = new FileReader()
-                reader.onload = function(event) {
+                reader.onload = function (event) {
                     profileImage.value.src = event.target.result
                 }
                 reader.readAsDataURL(file)
             }
 
+            const onSaveProfile = async () => {
+                if( !profileImageData.value && !backgroundImageData.value) {
+                    return
+                }
 
-            return { tweetBody, currentUser, onAddTweet, onChangeBackgroundImage, onChangeProfileImage, backgroundImage, profileImage, previewBackgroundImage, previewProfileImage}
+                if (profileImageData.value) {
+                    try {
+                        const uploadTask = await storage.ref(`profile/${currentUser.value.uid}/profile`).put(profileImageData.value)
+                        const url = await uploadTask.ref.getDownloadURL()
+                        await USER_COLLECTION.doc(currentUser.value.uid).update({
+                            profile_img_url: url,
+                        })
+                        store.commit('SET_PROFILE_IMAGE', url)
+                    } catch(e) {
+                        console.log(`profile image data error : ${e}`)
+                    }
+                }
+
+                if (backgroundImageData.value) {
+                    try {
+                        const uploadTask = await storage.ref(`profile/${currentUser.value.uid}/background`).put(backgroundImageData.value)
+                        const url = await uploadTask.ref.getDownloadURL()
+                        await USER_COLLECTION.doc(currentUser.value.uid).update({
+                            background_img_url: url,
+                        })
+                        store.commit('SET_BACKGROUND_IMAGE', url)
+                    } catch(e) {
+                        console.log(`background image data error : ${e}`)
+                    }
+                }
+
+                emit('close-modal')
+            }
+
+            return { 
+                tweetBody, 
+                currentUser, 
+                onAddTweet, 
+                onChangeBackgroundImage, 
+                onChangeProfileImage, 
+                backgroundImage, 
+                profileImage, 
+                previewBackgroundImage, 
+                previewProfileImage, 
+                backgroundImageData,
+                profileImageData,
+                onSaveProfile,
+            }
         }
     }
 </script>
