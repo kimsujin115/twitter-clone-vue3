@@ -28,7 +28,7 @@
 
                                 <!-- profile image-->
                                 <div class="absolute -bottom-14 left-2">
-                                    <img ref="profileImage" src="/profile.jpeg" class="border-4 border-white w-28 h-28 rounded-full" alt="">
+                                    <img ref="profileImage" src="/profile.jpeg" class="object-cover border-4 border-white w-28 h-28 rounded-full" alt="">
                                     <button @click="onChangeProfileImage" class="absolute bottom-9 left-9 h-10 w-10 hover:text-gray-200 rounded-full fas fa-camera text-white text-lg"></button>
                                     <input @change="previewProfileImage" type="file" accept="image/*" id="profileImageInput" class="hidden">
                                 </div>
@@ -81,8 +81,17 @@
                 reader.readAsDataURL(file)
             }
 
+            const previewProfileImage = (event) => {
+                const file = event.target.files[0]
+                let reader = new FileReader()
+                reader.onload = function(event) {
+                    profileImage.value.src = event.target.result
+                }
+                reader.readAsDataURL(file)
+            }
 
-            return { tweetBody, currentUser, onAddTweet, onChangeBackgroundImage, onChangeProfileImage, backgroundImage, profileImage, previewBackgroundImage}
+
+            return { tweetBody, currentUser, onAddTweet, onChangeBackgroundImage, onChangeProfileImage, backgroundImage, profileImage, previewBackgroundImage, previewProfileImage}
         }
     }
 </script>
