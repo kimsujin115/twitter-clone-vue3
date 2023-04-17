@@ -22,8 +22,19 @@
                 </div>
             </div>
             <!-- profile edit button -->
-            <div class="text-right mt-2 mr-2 h-">
-                <button v-if="currentUser.uid == profileUser.uid" @click="showProfileEditModal = true" class="border text-sm border-primary text-primary px-3 py-2 hover:bg-blue-50 font-bold rounded-full">프로필 수정</button>
+            <div class="relative text-right mt-2 mr-2 h-14">
+                <div v-if="currentUser.uid == profileUser.uid">
+                    <button @click="showProfileEditModal = true" class="border text-sm border-primary text-primary px-3 py-2 hover:bg-blue-50 font-bold rounded-full">프로필 수정</button>
+                </div>
+                <div v-else>
+                    <div v-if="currentUser.followings.includes(profileUser.uid)" @click="onUnFollow">
+                        <button class="absolute w-24 right-0 text-sm bg-primary text-white px-3 py-2 hover:opacity-0 font-bold rounded-full">팔로잉</button>
+                        <button class="absolute w-24 right-0 text-sm bg-red-400 text-white px-3 py-2 opacity-0 hover:opacity-100 font-bold rounded-full">언팔로우</button>
+                    </div>
+                    <div v-else @click="onFollow">
+                        <button class="absolute w-24 right-0 border text-sm border-primary text-primary px-3 py-2 hover:bg-blue-50 font-bold rounded-full">팔로우</button>
+                    </div>
+                </div>
             </div>
             <!-- user info -->
             <div class="mx-3 mt-2">
@@ -34,9 +45,9 @@
                 <span class="text-gray-500">{{ moment(profileUser.created_at).format('YYYY년 MM월') }}</span>
                </div> 
                <div>
-                <span class="font-bold mr-1">{{ profileUser.followings }}</span>
+                <span class="font-bold mr-1">{{ profileUser.followings.length }}</span>
                 <span class="text-gray-500">팔로우 중</span>
-                <span class="font-bold mr-1 ml-2">{{ profileUser.follwer }}</span>
+                <span class="font-bold mr-1 ml-2">{{ profileUser.followers.length }}</span>
                 <span class="text-gray-500">팔로워</span>
                </div>
             </div>
@@ -68,6 +79,7 @@
     import { useRoute } from 'vue-router';
     import router from '../router'
     import ProfileEditModal from '../components/profileEditModal.vue';
+    import firebase from 'firebase';
 
     export default {
         components : { Trends, Tweet, ProfileEditModal },
@@ -139,7 +151,44 @@
 
             })
 
-            return { currentUser, profileUser, tweets, reTweets, likeTweets, moment, currentTab, router, showProfileEditModal }
+            const onFollow = async () => {
+                await USER_COLLECTION.doc(currentUser.value.uid).update({
+                    followings : firebase.firestore.FieldValue.arrayUnion(profileUser.value.uid),
+                })
+                
+                await USER_COLLECTION.doc(profileUser.value.uid).update({
+                    followers : firebase.firestore.FieldValue.arrayUnion(currentUser.value.uid),
+                })
+
+                store.commit('SET_FOLLOW', profileUser.value.uid)
+                
+            }
+
+            const onUnFollow = async () => {
+                await USER_COLLECTION.doc(currentUser.value.uid).update({
+                    followings : firebase.firestore.FieldValue.arrayRemove(profileUser.value.uid),
+                })
+
+                await USER_COLLECTION.doc(profileUser.value.uid).update({
+                    followers : firebase.firestore.FieldValue.arrayRemove(currentUser.value.uid),
+                })
+
+                store.commit('SET_UN_FOLLOW', profileUser.value.uid)
+            }
+
+            return { 
+                currentUser, 
+                profileUser, 
+                tweets, 
+                reTweets, 
+                likeTweets, 
+                moment, 
+                currentTab, 
+                router, 
+                showProfileEditModal, 
+                onUnFollow, 
+                onFollow,
+            }
         }
     }
 </script>
