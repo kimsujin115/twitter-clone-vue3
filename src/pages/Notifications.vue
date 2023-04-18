@@ -34,7 +34,8 @@
 
             onBeforeMount(() => {
                 currentUser.value.followings.forEach( async (following) => {
-                    const snapshot = await TWEET_COLLECTION.where("uid", "==", following).orderBy("create_at", "desc").get()
+                    const dateFrom = Date.now - 60 * 60 * 24 * 7 * 1000 // before 7 days
+                    const snapshot = await TWEET_COLLECTION.where("create_at", ">", dateFrom).where("uid", "==", following).orderBy("create_at", "desc").get()
                     snapshot.docs.forEach( async (doc) => {
                         let tweet = await getTweetInfo(doc.data(), currentUser.value)
                         notifications.value.push(tweet)
