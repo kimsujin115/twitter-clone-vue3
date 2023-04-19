@@ -23,3 +23,4 @@ const firebaseConfig = {
   export const COMMENT_COLLECTION = db.collection("comments")
   export const RETWEET_COLLECTION = db.collection("retweets")
   export const LIKES_COLLECTION = db.collection("likes")
+  export const MESSAGE_COLLECTION = db.collection("messages")
