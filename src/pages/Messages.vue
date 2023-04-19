@@ -52,7 +52,7 @@
                         <div class="mt-2 text-sm text-gray-500">{{ moment(message.created_at).fromNow() }}</div>
                     </div>
                     <!-- chat bubble : another chat -->
-                    <div class="text-lefts px-3 py-3" v-else>
+                    <div class="text-left px-3 py-3" v-else>
                         <span class="bg-gray-100 px-4 py-2 rounded-full">{{ message.message_body }}</span> 
                         <div class="mt-2 text-sm text-gray-500">{{ moment(message.created_at).fromNow() }}</div>
                     </div>
