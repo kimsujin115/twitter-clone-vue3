@@ -6,7 +6,7 @@
             <!-- title -->
             <div class="p-3 h-14 font-bold text-lg border-b border-gray-100">쪽지</div>
             <!-- a user list -->
-            <div @click="onSelecteUser(user)" class="flex px-3 py-4 items-center cursor-pointer hover:bg-gray-50 border-b border-gray-100" v-for="user in users" :key="user.id">
+            <div @click="onSelecteUser(user)" :class="`${selectedUser ? 'bg-gray-50' : 'border-gray-100'} flex px-3 py-4 items-center cursor-pointer hover:bg-gray-50 border-b`" v-for="user in users" :key="user.id">
                 <img :src="user.profile_img_url" class="w-10 h-10 rounded-full cursor-pointer mr-2" />
                 <div class="flex space-x-2">
                     <span class="font-bold">{{ user.email }}</span>
