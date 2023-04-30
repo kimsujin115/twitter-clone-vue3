@@ -1,4 +1,4 @@
-firebase hosting deploy URL : https://twitter-clone-vue-ff610.web.app/login
+firebase hosting deploy URL : https://twitter-clone-vue-ff610.web.app/
 
 
 
